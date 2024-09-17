@@ -16,6 +16,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 # ------ aditional ----------
+import subprocess
+subprocess.run(["pip", "install", "sagemaker"])
+
 import sagemaker
 import time
 from sagemaker.feature_store.feature_group import FeatureGroup
