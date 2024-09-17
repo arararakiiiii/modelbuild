@@ -23,7 +23,7 @@ logger.addHandler(logging.StreamHandler())
 import datetime
 now = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
-client = boto3.client("sagemaker")
+client = boto3.client("sagemaker", region_name="ap-northeast-1")
 client.create_user_profile(
     DomainId='d-ugctifxcc9ts',
     UserProfileName='test'+now
