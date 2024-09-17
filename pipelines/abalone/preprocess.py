@@ -19,6 +19,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
+# -------- aratosh 9/17 ----------
 import datetime
 now = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
@@ -27,6 +28,7 @@ client.create_user_profile(
     DomainId='d-ugctifxcc9ts',
     UserProfileName='test'+now
 )
+# ---------------------------------
 
 # Since we get a headerless CSV file we specify the column names here.
 feature_columns_names = [
