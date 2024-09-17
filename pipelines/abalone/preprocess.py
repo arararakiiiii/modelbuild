@@ -18,7 +18,9 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 # ------ aditional ----------
 import subprocess
 subprocess.run(["pip", "install", "--upgrade", "pip"])
-subprocess.run(["pip", "install", "sagemaker==2.157.0"])
+subprocess.run(["pip", "install", "boto3==1.33.2"])
+subprocess.run(["pip", "install", "botocore==1.33.2"])
+subprocess.run(["pip", "install", "sagemaker"])
 
 import sagemaker
 import time
