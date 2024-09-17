@@ -15,6 +15,13 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
+# ------ aditional ----------
+import sagemaker
+import time
+from sagemaker.feature_store.feature_group import FeatureGroup
+from time import gmtime, strftime, sleep
+# --------------------------
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
@@ -63,6 +70,16 @@ def merge_two_dicts(x, y):
     return z
 
 
+# add
+def check_feature_group_status(feature_group):
+    status = feature_group.describe().get("FeatureGroupStatus")
+    while status == "Creating":
+        print("Waiting for Feature Group to be Created")
+        time.sleep(5)
+        status = feature_group.describe().get("FeatureGroupStatus")
+    print(f"FeatureGroup {feature_group.name} successfully created.")
+
+
 if __name__ == "__main__":
     logger.debug("Starting preprocessing.")
     parser = argparse.ArgumentParser()
@@ -88,6 +105,26 @@ if __name__ == "__main__":
         dtype=merge_two_dicts(feature_columns_dtype, label_column_dtype),
     )
     os.unlink(fn)
+
+# ----------------------  
+    sagemaker_session = sagemaker.Session()
+    feature_group_name = "test-feature-group-" + strftime("%d-%H-%M-%S", gmtime())
+    feature_group = FeatureGroup(name=feature_group_name, sagemaker_session=sagemaker_session)
+    feature_group.load_feature_definitions(data_frame=df)
+    
+    current_time_sec = int(round(time.time()))
+    record_identifier_feature_name = "customer_id"
+    
+    feature_group.create(
+        s3_uri="s3://aratosh-case/sagemaker/case-172551644000476/features/",
+        record_identifier_name=record_identifier_feature_name,
+        event_time_feature_name="EventTime",
+        enable_online_store=True,
+    )    
+    check_feature_group_status(feature_group)
+# ----------------------
+
+    
 
     logger.debug("Defining transformers.")
     numeric_features = list(feature_columns_names)
